@@ -5,9 +5,10 @@ import { UsersModule } from './modules/users/users.module'
 
 import { AuthModule } from './modules/auth/auth.module'
 import { AuthGuard } from './modules/auth/auth.guard' // this needs to be here, don't move up
+import { CategoriesModule } from './modules/categories/categories.module';
 
 @Module({
-  imports: [UsersModule, AuthModule],
+  imports: [UsersModule, AuthModule, CategoriesModule],
   controllers: [],
   providers: [
     {
