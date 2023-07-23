@@ -1,15 +1,14 @@
-import { Controller, Get, Req } from '@nestjs/common'
+import { Controller, Get } from '@nestjs/common'
 
 import { UsersService } from './users.service'
+import { ActiveUserId } from 'src/shared/decorators/ActiveUserId'
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('/me')
-  async me(@Req() request: any) {
-    const id = request.userId as string
-
-    return await this.usersService.getUserById(id)
+  async me(@ActiveUserId() userId: string) {
+    return await this.usersService.getUserById(userId)
   }
 }
