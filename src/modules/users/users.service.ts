@@ -4,5 +4,14 @@ import { UserRepository } from 'src/shared/database/repositories/users.repositor
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(private readonly usersRepository: UserRepository) {}
+
+  async getUserById(id: string) {
+    const user = await this.usersRepository.findById(id)
+
+    return {
+      name: user.name,
+      email: user.email,
+    }
+  }
 }
