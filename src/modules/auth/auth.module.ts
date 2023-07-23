@@ -12,6 +12,7 @@ import { AuthController } from './auth.controller'
   imports: [
     DatabaseModule,
     JwtModule.register({
+      global: true,
       secret: env.jwtSecret,
       signOptions: {
         expiresIn: '7d',
