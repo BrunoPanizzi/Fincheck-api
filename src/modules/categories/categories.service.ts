@@ -1,30 +1,60 @@
-import { Injectable } from '@nestjs/common'
-import { CreateCategoryDto } from './dto/create-category.dto'
-import { UpdateCategoryDto } from './dto/update-category.dto'
+import { Injectable, NotFoundException } from '@nestjs/common'
 
 import { CategoriesRepository } from 'src/shared/database/repositories/categories.repository'
+
+import { CreateCategoryDto } from './dto/create-category.dto'
+import { UpdateCategoryDto } from './dto/update-category.dto'
 
 @Injectable()
 export class CategoriesService {
   constructor(private readonly categoriesRepository: CategoriesRepository) {}
 
-  create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category'
-  }
-
   findAllByUserId(userId: string) {
     return this.categoriesRepository.findAllByUserId(userId)
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`
+  findById(userId: string, categoryId: string) {
+    return this.validateCategoryOwnership(userId, categoryId)
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`
+  create(userId: string, createCategoryDto: CreateCategoryDto) {
+    return this.categoriesRepository.create({
+      ...createCategoryDto,
+      // refactor this
+      user: {
+        connect: {
+          id: userId,
+        },
+      },
+    })
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`
+  async update(
+    userId: string,
+    categoryId: string,
+    updateCategoryDto: UpdateCategoryDto,
+  ) {
+    await this.validateCategoryOwnership(userId, categoryId)
+
+    return this.categoriesRepository.update(categoryId, updateCategoryDto)
+  }
+
+  async remove(userId: string, categoryId: string) {
+    await this.validateCategoryOwnership(userId, categoryId)
+
+    return this.categoriesRepository.delete(categoryId)
+  }
+
+  private async validateCategoryOwnership(userId: string, categoryId: string) {
+    const category = await this.categoriesRepository.findById(
+      userId,
+      categoryId,
+    )
+
+    if (!category) {
+      throw new NotFoundException('Category not found')
+    }
+
+    return category
   }
 }

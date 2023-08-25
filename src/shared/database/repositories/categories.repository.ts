@@ -7,22 +7,42 @@ import { PrismaService } from '../prisma.service'
 export class CategoriesRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
+  findAllByUserId(userId: string) {
+    return this.prismaService.category.findMany({
+      where: {
+        userId,
+      },
+    })
+  }
+
+  findById(userId: string, categoryId: string) {
+    return this.prismaService.category.findFirst({
+      where: {
+        id: categoryId,
+        userId,
+      },
+    })
+  }
+
   create(createCategoryDto: Prisma.CategoryCreateInput) {
     return this.prismaService.category.create({
       data: createCategoryDto,
     })
   }
 
-  findById(id: string) {
-    return this.prismaService.category.findUnique({
-      where: { id },
+  update(categoryId: string, updateCategoryDto: Prisma.CategoryUpdateInput) {
+    return this.prismaService.category.update({
+      where: {
+        id: categoryId,
+      },
+      data: updateCategoryDto,
     })
   }
 
-  findAllByUserId(userId: string) {
-    return this.prismaService.category.findMany({
+  delete(categoryId: string) {
+    return this.prismaService.category.delete({
       where: {
-        userId,
+        id: categoryId,
       },
     })
   }
