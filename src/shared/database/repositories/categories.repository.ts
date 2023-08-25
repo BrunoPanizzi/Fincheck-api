@@ -24,9 +24,19 @@ export class CategoriesRepository {
     })
   }
 
-  create(createCategoryDto: Prisma.CategoryCreateInput) {
+  create(
+    userId: string,
+    createCategoryDto: Prisma.CategoryCreateManyUserInput,
+  ) {
     return this.prismaService.category.create({
-      data: createCategoryDto,
+      data: {
+        ...createCategoryDto,
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+      },
     })
   }
 

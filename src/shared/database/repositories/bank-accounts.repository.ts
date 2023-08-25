@@ -24,9 +24,19 @@ export class BankAccountsRepository {
     })
   }
 
-  create(createBankAccountDto: Prisma.BankAccountCreateInput) {
+  create(
+    userId: string,
+    createBankAccountDto: Prisma.BankAccountCreateManyUserInput,
+  ) {
     return this.prismaService.bankAccount.create({
-      data: createBankAccountDto,
+      data: {
+        ...createBankAccountDto,
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+      },
     })
   }
 

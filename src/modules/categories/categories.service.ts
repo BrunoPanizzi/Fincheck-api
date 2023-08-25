@@ -18,15 +18,7 @@ export class CategoriesService {
   }
 
   create(userId: string, createCategoryDto: CreateCategoryDto) {
-    return this.categoriesRepository.create({
-      ...createCategoryDto,
-      // refactor this
-      user: {
-        connect: {
-          id: userId,
-        },
-      },
-    })
+    return this.categoriesRepository.create(userId, createCategoryDto)
   }
 
   async update(

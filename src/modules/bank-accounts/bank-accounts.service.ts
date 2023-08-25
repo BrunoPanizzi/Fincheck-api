@@ -25,14 +25,7 @@ export class BankAccountsService {
   }
 
   create(userId: string, createBankAccountDto: CreateBankAccountDto) {
-    return this.bankAccountsRepository.create({
-      ...createBankAccountDto,
-      user: {
-        connect: {
-          id: userId,
-        },
-      },
-    })
+    return this.bankAccountsRepository.create(userId, createBankAccountDto)
   }
 
   async update(
